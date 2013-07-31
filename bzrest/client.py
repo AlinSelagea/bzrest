@@ -39,7 +39,7 @@ class BugzillaClient(object):
         return self.request("POST", "bug", data)
 
     def get_bug(self, id_, data=None):
-        return self.request("GET", "bug/%s" % id_, data)
+        return self.request("GET", "bug/%s" % id_, data)["bugs"][0]
 
     def update_bug(self, id_, data):
         return self.request("POST", "bug/%s" % id_, data)
