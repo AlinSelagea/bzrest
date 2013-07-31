@@ -1,3 +1,5 @@
+import requests
+
 INVALID_ALIAS = 100
 INVALID_BUG = 101
 
