@@ -43,3 +43,8 @@ class BugzillaClient(object):
 
     def update_bug(self, id_, data):
         return self.request("POST", "bug/%s" % id_, data)
+
+    def add_comment(self, id_, comment, data={}):
+        data = data.copy()
+        data["comment"] = comment
+        return self.request("POST", "bug/%s/comment" % id_, data)
