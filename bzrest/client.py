@@ -2,10 +2,7 @@ from urlparse import urljoin
 
 import requests
 
-class BugzillaAPIError(requests.HTTPError):
-    def __init__(self, bugzilla_code, *args, **kwargs):
-        self.bugzilla_code = bugzilla_code
-        requests.HTTPError.__init__(self, *args, **kwargs)
+from .errors import BugzillaAPIError
 
 
 class BugzillaClient(object):
