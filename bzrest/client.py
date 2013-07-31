@@ -1,3 +1,5 @@
+from urlparse import urljoin
+
 import requests
 
 class BugzillaAPIError(requests.HTTPError):
