@@ -6,9 +6,6 @@ from .errors import BugzillaAPIError
 
 
 class BugzillaClient(object):
-    def __init__(self, bzurl=None, username=None, password=None):
-        self.configure(bzurl, username, password)
-
     def configure(self, bzurl, username, password):
         self.bzurl = bzurl
         if not self.bzurl.endswith("/"):
