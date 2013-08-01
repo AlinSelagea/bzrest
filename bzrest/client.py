@@ -29,15 +29,15 @@ class BugzillaClient(object):
         }
         if data:
             data = json.dumps(data)
-        log.debug("Starting request: %s %s", method, url)
-        log.info("Data is: %s", data)
+        log.info("Starting request: %s %s", method, url)
+        log.debug("Data is: %s", data)
         r = requests.request(method, url, params=params, data=data, headers=headers)
         r.raise_for_status()
         # Bugzilla's REST API doesn't always return 4xx when it maybe should.
         # (Eg, loading a non-existent bug returns 200). We need to check the
         # response to know for sure whether or not there was an error.
         resp = r.json()
-        log.info("Got response: %s" % resp)
+        log.debug("Got response: %s" % resp)
         if resp.get("error", False):
             raise BugzillaAPIError(resp["code"], resp["message"], response=resp)
         return resp
