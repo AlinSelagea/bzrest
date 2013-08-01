@@ -1,3 +1,4 @@
+import json
 from urlparse import urljoin
 
 import requests
@@ -24,7 +25,7 @@ class BugzillaClient(object):
             "Content-Type": "application/json",
         }
         if data:
-            data.json.dumps(data)
+            data = json.dumps(data)
         r = requests.request(method, url, params=params, data=data, headers=headers)
         r.raise_for_status()
         # Bugzilla's REST API doesn't always return 4xx when it maybe should.
