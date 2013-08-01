@@ -29,7 +29,7 @@ class BugzillaClient(object):
         }
         if data:
             data = json.dumps(data)
-        log.info("Starting request: %s %s", method, url)
+        log.info("Sending request: %s %s", method, url)
         log.debug("Data is: %s", data)
         r = requests.request(method, url, params=params, data=data, headers=headers)
         r.raise_for_status()
@@ -37,7 +37,8 @@ class BugzillaClient(object):
         # (Eg, loading a non-existent bug returns 200). We need to check the
         # response to know for sure whether or not there was an error.
         resp = r.json()
-        log.debug("Got response: %s" % resp)
+        log.info("Got response: %s", r.status_code)
+        log.debug("Response body: %s", resp)
         if resp.get("error", False):
             raise BugzillaAPIError(resp["code"], resp["message"], response=resp)
         return resp
