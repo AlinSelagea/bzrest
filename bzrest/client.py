@@ -19,10 +19,15 @@ class BugzillaClient(object):
 
     def request(self, method, path, data=None):
         url = urljoin(self.bzurl, path)
-        params = {
-            "Bugzilla_login": self.username,
-            "Bugzilla_password": self.password,
-        }
+        if method in ("GET", "HEAD"):
+            params = {
+                "Bugzilla_login": self.username,
+                "Bugzilla_password": self.password,
+            }
+        else:
+            params = {}
+            data["Bugzilla_login"] = self.username
+            data["Bugzilla_password"] = self.password
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -50,9 +55,9 @@ class BugzillaClient(object):
         return self.request("GET", "bug/%s" % id_, data)["bugs"][0]
 
     def update_bug(self, id_, data):
-        return self.request("POST", "bug/%s" % id_, data)
+        return self.request("PUT", "bug/%s" % id_, data)
 
     def add_comment(self, id_, comment, data={}):
         data = data.copy()
-        data["comment"] = comment
-        return self.request("POST", "bug/%s/comment" % id_, data)
+        data["comment"] = {"body": comment}
+        return self.update_bug(id_, data)
