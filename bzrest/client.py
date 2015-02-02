@@ -37,11 +37,15 @@ class BugzillaClient(object):
         log.info("Sending request: %s %s", method, url)
         log.debug("Data is: %s", data)
         r = requests.request(method, url, params=params, data=data, headers=headers)
-        r.raise_for_status()
-        # Bugzilla's REST API doesn't always return 4xx when it maybe should.
-        # (Eg, loading a non-existent bug returns 200). We need to check the
-        # response to know for sure whether or not there was an error.
-        resp = r.json()
+        try:
+            # Bugzilla's REST API doesn't always return 4xx when it maybe should.
+            # (Eg, loading a non-existent bug returns 200). We need to check the
+            # response to know for sure whether or not there was an error.
+            resp = r.json()
+        except:
+            r.raise_for_status()
+            # If we get past here, the exception was from r.json() despite a successful http code
+            raise
         log.info("Got response: %s", r.status_code)
         log.debug("Response body: %s", resp)
         if resp.get("error", False):
