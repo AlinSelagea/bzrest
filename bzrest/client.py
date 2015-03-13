@@ -10,24 +10,42 @@ log = logging.getLogger(__name__)
 
 
 class BugzillaClient(object):
-    def configure(self, bzurl, username, password):
+    def configure(self, bzurl, username=None, password=None, apikey=None):
+        if apikey:
+            self.apikey = apikey
+            self.username = None
+            self.password = None
+        elif username and password:
+            self.apikey = None
+            self.username = username
+            self.password = password
+        else:
+            raise ValueError("One of apikey or username & password must be supplied")
+
         self.bzurl = bzurl
         if not self.bzurl.endswith("/"):
             self.bzurl += "/"
-        self.username = username
-        self.password = password
 
     def request(self, method, path, data=None):
         url = urljoin(self.bzurl, path)
-        if method in ("GET", "HEAD"):
-            params = {
-                "Bugzilla_login": self.username,
-                "Bugzilla_password": self.password,
-            }
+        if self.apikey:
+            if method in ("GET", "HEAD"):
+                params = {
+                    "Bugzilla_api_key": self.apikey,
+                }
+            else:
+                params = {}
+                data["Bugzilla_api_key"] = self.apikey
         else:
-            params = {}
-            data["Bugzilla_login"] = self.username
-            data["Bugzilla_password"] = self.password
+            if method in ("GET", "HEAD"):
+                params = {
+                    "Bugzilla_login": self.username,
+                    "Bugzilla_password": self.password,
+                }
+            else:
+                params = {}
+                data["Bugzilla_login"] = self.username
+                data["Bugzilla_password"] = self.password
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
