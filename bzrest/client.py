@@ -15,6 +15,8 @@ class BugzillaClient(object):
             self.apikey = apikey
             self.username = None
             self.password = None
+            if username or password:
+                raise ValueError("Cannot use apikey along with user-based login")
         elif username and password:
             self.apikey = None
             self.username = username
