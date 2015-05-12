@@ -10,17 +10,19 @@ log = logging.getLogger(__name__)
 
 
 class BugzillaClient(object):
-    def configure(self, bzurl, username=None, password=None, apikey=None):
-        if apikey:
-            self.apikey = apikey
+    def configure(self, bzurl, **kwargs):
+        if not set(kwargs.keys()).issubset(set(["password", "username", "apikey"])):
+            raise ValueError("Invalid arguments passed to BugzillaClient.configure")
+        if "apikey" in kwargs:
+            self.apikey = kwargs["apikey"]
             self.username = None
             self.password = None
-            if username or password:
+            if kwargs.get("username", None) or kwargs.get("password", None):
                 raise ValueError("Cannot use apikey along with user-based login")
-        elif username and password:
+        elif "username" in kwargs and "password" in kwargs:
             self.apikey = None
-            self.username = username
-            self.password = password
+            self.username = kwargs["username"]
+            self.password = kwargs["password"]
         else:
             raise ValueError("One of apikey or username & password must be supplied")
 
